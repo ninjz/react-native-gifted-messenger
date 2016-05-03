@@ -80,6 +80,7 @@ class GiftedMessenger extends Component {
       },
       textInputContainer: {
         height: 44,
+        backgroundColor: '#EFEFEF',
         borderTopWidth: 1 / PixelRatio.get(),
         borderColor: '#b2b2b2',
         flexDirection: 'row',
@@ -90,15 +91,24 @@ class GiftedMessenger extends Component {
         alignSelf: 'center',
         height: 30,
         width: 100,
-        backgroundColor: '#FFF',
+        borderColor: '#EEEEEE',
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderRadius: 5,
         flex: 1,
-        padding: 0,
+        padding: 5,
         margin: 0,
         fontSize: 15,
       },
       sendButton: {
-        marginTop: 11,
-        marginLeft: 10,
+        paddingTop: 6,
+        paddingBottom: 6,
+        paddingLeft: 11,
+        paddingRight: 11,
+        borderRadius: 5,
+        backgroundColor: '#23A53C',
+        margin: 5,
+        fontSize: 13,
       },
       date: {
         color: '#aaaaaa',
@@ -447,34 +457,6 @@ class GiftedMessenger extends Component {
     );
   }
 
-  renderDate(rowData = {}) {
-    let diffMessage = null;
-    diffMessage = this.getPreviousMessage(rowData);
-
-    if (this.props.renderCustomDate) {
-      return this.props.renderCustomDate(rowData, diffMessage)
-    }
-
-    if (rowData.date instanceof Date) {
-      if (diffMessage === null) {
-        return (
-          <Text style={[this.styles.date]}>
-            {moment(rowData.date).calendar()}
-          </Text>
-        );
-      } else if (diffMessage.date instanceof Date) {
-        const diff = moment(rowData.date).diff(moment(diffMessage.date), 'minutes');
-        if (diff > 5) {
-          return (
-            <Text style={[this.styles.date]}>
-              {moment(rowData.date).calendar()}
-            </Text>
-          );
-        }
-      }
-    }
-    return null;
-  }
 
   renderRow(rowData = {}) {
     let diffMessage = null;
@@ -482,7 +464,6 @@ class GiftedMessenger extends Component {
 
     return (
       <View>
-        {this.renderDate(rowData)}
         <Message
           rowData={rowData}
           onErrorButtonPress={this.props.onErrorButtonPress}
@@ -623,7 +604,7 @@ GiftedMessenger.defaultProps = {
   onLoadEarlierMessages: () => {},
   onMessageLongPress: () => {},
   parseText: false,
-  placeholder: 'Type a message...',
+  placeholder: 'Add a comment...',
   placeholderTextColor: '#ccc',
   scrollAnimated: true,
   sendButtonText: 'Send',
