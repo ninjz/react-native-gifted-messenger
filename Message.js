@@ -1,32 +1,38 @@
-import React, { View, Text, StyleSheet, TouchableHighlight, Image, Component } from 'react-native';
+import React, { View, Text, StyleSheet, TouchableHighlight, Dimensions, Image, Component } from 'react-native';
+import moment from 'moment';
 import Bubble from './Bubble';
 import ErrorButton from './ErrorButton';
 
 const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
+    marginTop: 10,
     marginBottom: 10,
   },
   name: {
-    color: '#aaaaaa',
+    color: '#00467E',
+    fontWeight: 'bold',
     fontSize: 12,
-    marginLeft: 55,
+    marginLeft: 5,
     marginBottom: 5,
+  },
+  messageText: {
+    marginLeft: 5,
   },
   nameInsideBubble: {
     color: '#666666',
     marginLeft: 0,
   },
   imagePosition: {
-    height: 30,
-    width: 30,
+    height: 45,
+    width: 45,
     alignSelf: 'flex-end',
     marginLeft: 8,
     marginRight: 8,
   },
   image: {
     alignSelf: 'center',
-    borderRadius: 15,
+    borderRadius: 25,
   },
   imageLeft: {
   },
@@ -34,6 +40,12 @@ const styles = StyleSheet.create({
   },
   spacer: {
     width: 10,
+  },
+  date: {
+    color: '#aaaaaa',
+    fontSize: 12,
+    textAlign: 'right',
+    fontWeight: 'bold',
   },
   status: {
     color: '#aaaaaa',
@@ -53,18 +65,16 @@ export default class Message extends Component {
 
   renderName(name, displayNames, diffMessage){
     if (displayNames === true) {
-      if (diffMessage === null || name !== diffMessage.name) {
-        return (
-          <Text
-            style={[
-              styles.name,
-              this.props.displayNamesInsideBubble ? styles.nameInsideBubble : null,
-            ]}
-          >
-            {name}
-          </Text>
-        );
-      }
+      return (
+        <Text
+          style={[
+            styles.name,
+            this.props.displayNamesInsideBubble ? styles.nameInsideBubble : null,
+          ]}
+        >
+          {name}
+        </Text>
+      );
     }
     return null;
   }
@@ -132,6 +142,18 @@ export default class Message extends Component {
     return null;
   }
 
+  renderDate(rowData = {}) {
+    if (rowData.date instanceof Date) {
+      return (
+        <Text style={[styles.date]}>
+          {moment(rowData.date).calendar()}
+        </Text>
+      );
+    }
+    return null;
+  }
+
+
   render() {
     var {
       rowData,
@@ -156,7 +178,7 @@ export default class Message extends Component {
       RowView = rowData.view;
     }
 
-    let messageView = (
+    let messageView2 = (
       <View>
         {position === 'left' && !this.props.displayNamesInsideBubble ? this.renderName(rowData.name, displayNames, diffMessage) : null}
         <View
@@ -182,6 +204,40 @@ export default class Message extends Component {
         {rowData.position === 'right' ? this.renderStatus(rowData.status) : null}
       </View>
     );
+
+    let messageView = (
+      <View>
+        <View style={[styles.rowContainer, {
+            flexDirection: 'row'
+          }]}>
+          {this.renderImage(rowData, diffMessage, forceRenderImage, onImagePress)}
+          <View>
+            {this.renderName(rowData.name, displayNames, diffMessage)}
+            <Text style={[styles.messageText, {
+                justifyContent: 'center'
+              }]}>
+              {rowData.text}
+            </Text>
+          </View>
+
+          <View style={{
+              flex: 1,
+              alignSelf: 'flex-start',
+              alignItems: 'flex-end',
+              paddingRight: 5,
+            }}>
+            {this.renderDate(rowData)}
+          </View>
+        </View>
+        <View style={{
+            height: 1,
+            marginLeft: 50,
+            backgroundColor: '#F6F6F6',
+            width: Dimensions.get('window').width
+          }}>
+        </View>
+      </View>
+    )
 
     if (typeof onMessageLongPress === 'function') {
       return (
